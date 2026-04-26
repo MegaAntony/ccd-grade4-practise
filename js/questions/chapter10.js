@@ -366,10 +366,10 @@ var CHAPTER10_DATA = {
           ref: "Lesson 10: Zacchaeus experienced the loving presence of Jesus and listened to His words and repented of his sins."
         },
         {
-          q: "The Word of God to remember for Lesson 10 is ___.",
-          options: ["Luke 19:5", "Luke 15:7", "Luke 15:11", "John 20:23"],
-          correct: 1,
-          ref: "Lesson 10: 'Heaven will rejoice more over a sinner who repents' (Luke 15:7)."
+          q: "Luke 15:7 says 'Heaven will rejoice more over a sinner who repents.' Which lesson is this the Word of God for?",
+          options: ["Lesson 8", "Lesson 9", "Lesson 10", "Lesson 11"],
+          correct: 2,
+          ref: "Lesson 10: 'Heaven will rejoice more over a sinner who repents' (Luke 15:7) is the Word of God to remember for Lesson 10."
         },
         {
           q: "When must we repent of our sins?",

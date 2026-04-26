@@ -294,10 +294,10 @@ var CHAPTER12_DATA = {
           ref: "Lesson 12: The literal meaning of the term 'priest' is one who is 'placed before.'"
         },
         {
-          q: "Jesus saved us through His ___.",
-          options: ["Birth and miracles", "Life, death, and resurrection", "Teachings alone", "Death only"],
+          q: "Jesus is the Good Shepherd who saved the sheep by ___.",
+          options: ["Leading them to green pastures", "Sacrificing His life for them", "Driving away wolves", "Calling them by name only"],
           correct: 1,
-          ref: "Lesson 12: Jesus saved us through His life, death, and resurrection."
+          ref: "Lesson 12: Jesus is the good shepherd who sacrificed His life for the sheep. He saved us through His life, death, and resurrection."
         },
         {
           q: "All baptized Christians share in Jesus's priesthood as ___.",
