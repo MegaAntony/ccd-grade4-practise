@@ -184,7 +184,7 @@
       <span class="header-logo">✝</span>
       <div class="header-text">
         <div class="header-title">My Progress</div>
-        <div class="header-subtitle">CCD Grade 4 · This Session</div>
+        <div class="header-subtitle">CCD Grade 4 · All Time Progress</div>
       </div>
       <nav class="header-nav">
         <a href="index.html">← All Chapters</a>
@@ -205,7 +205,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4 · Progress resets when browser tab is closed.</p>
+    <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4 · Progress is saved in your browser.</p>
   </footer>
 
   <script src="js/tracker.js"></script>
@@ -263,10 +263,12 @@
       // ── Overall stats ──
       var totalCorrect = 0, totalQs = 0;
       var examsAttempted = Object.keys(best).length;
-      Object.values(best).forEach(function (a) {
-        totalCorrect += a.score;
-        totalQs      += a.total;
-      });
+      var bestKeys = Object.keys(best);
+      for (var bi = 0; bi < bestKeys.length; bi++) {
+        var ba = best[bestKeys[bi]];
+        totalCorrect += ba.score;
+        totalQs      += ba.total;
+      }
       var overallPct = totalQs > 0 ? Math.round((totalCorrect / totalQs) * 100) : 0;
 
       var chAttempted   = Object.keys(chAvgs).length;
@@ -286,9 +288,9 @@
 
       // Page hero
       html += '<div class="page-hero" style="margin-bottom:24px;">'
-        + '<span class="badge">Session Summary</span>'
+        + '<span class="badge">All Time</span>'
         + '<h1>My Progress</h1>'
-        + '<p>Scores below show your <strong>best attempt</strong> per exam in this browser session.</p>'
+        + '<p>Scores below show your <strong>best attempt</strong> per exam. Progress is saved in your browser.</p>'
         + '</div>';
 
       // Summary cards
@@ -383,11 +385,19 @@
       });
 
       // CTA
-      html += '<div style="text-align:center;margin-top:32px;">'
+      html += '<div style="text-align:center;margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">'
         + '<a href="index.html" class="btn-primary" style="display:inline-block;text-decoration:none;">Practice More Chapters →</a>'
+        + '<button id="btn-clear" class="btn-secondary" style="cursor:pointer;">🗑️ Clear All Progress</button>'
         + '</div>';
 
       root.innerHTML = html;
+
+      document.getElementById('btn-clear').addEventListener('click', function () {
+        if (confirm('Are you sure you want to delete all your saved scores? This cannot be undone.')) {
+          CCDTracker.clearAll();
+          render();
+        }
+      });
     }
 
     document.addEventListener('DOMContentLoaded', render);
