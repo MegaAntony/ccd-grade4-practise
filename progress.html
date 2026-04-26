@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Progress – CCD Grade 4</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Progress page extras ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .summary-card .s-value {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--blue-deep);
+    }
+    .summary-card .s-label {
+      font-size: 0.78rem;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+    .summary-card.green .s-value { color: var(--green); }
+    .summary-card.gold  .s-value { color: var(--gold); }
+    .summary-card.red   .s-value { color: var(--red); }
+
+    /* ── Chapter progress table ── */
+    .ch-table { width: 100%; border-collapse: collapse; }
+    .ch-table th {
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray-500);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .ch-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+    .ch-table tr:last-child td { border-bottom: none; }
+    .ch-table tr:hover td { background: var(--gray-50); }
+
+    .ch-name { font-weight: 600; color: var(--gray-900); }
+    .ch-name a { color: var(--blue-mid); text-decoration: none; }
+    .ch-name a:hover { text-decoration: underline; }
+
+    /* exam pill badges */
+    .exam-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .exam-pill {
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pill-high   { background: var(--green-light); color: #166534; }
+    .pill-mid    { background: var(--gold-light);  color: #92400e; }
+    .pill-low    { background: var(--red-light);   color: #991b1b; }
+    .pill-none   { background: var(--gray-100);    color: var(--gray-500); }
+
+    /* chapter avg bar */
+    .avg-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .avg-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 20px;
+      overflow: hidden;
+      min-width: 60px;
+    }
+    .avg-bar-fill {
+      height: 100%;
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+    .avg-bar-fill.high { background: var(--green); }
+    .avg-bar-fill.mid  { background: var(--gold); }
+    .avg-bar-fill.low  { background: var(--red); }
+    .avg-text { font-size: 0.85rem; font-weight: 700; min-width: 38px; text-align: right; }
+
+    /* strength panels */
+    .strength-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .strength-panel {
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .strength-panel h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .strength-panel ul { list-style: none; }
+    .strength-panel li {
+      font-size: 0.88rem;
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-strong { background: var(--green-light); border: 1px solid #bbf7d0; }
+    .panel-improve { background: var(--red-light);  border: 1px solid #fecaca; }
+    .panel-strong h4  { color: #166534; }
+    .panel-improve h4 { color: #991b1b; }
+    .panel-strong li  { color: #166534; }
+    .panel-improve li { color: #991b1b; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-500);
+    }
+    .empty-state .big-icon { font-size: 3.5rem; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 1.1rem; color: var(--gray-700); margin-bottom: 8px; }
+    .empty-state p  { font-size: 0.9rem; max-width: 340px; margin: 0 auto 20px; }
+
+    /* attempt history */
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--white);
+      border-radius: 10px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+    .history-badge {
+      min-width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+    .history-badge.high { background: var(--green-light); color: #166534; }
+    .history-badge.mid  { background: var(--gold-light);  color: #92400e; }
+    .history-badge.low  { background: var(--red-light);   color: #991b1b; }
+    .history-info { flex: 1; }
+    .history-info strong { display: block; color: var(--gray-900); }
+    .history-info span   { color: var(--gray-500); font-size: 0.8rem; }
+    .history-score { font-weight: 700; font-size: 1rem; }
+
+    @media (max-width: 520px) {
+      .strength-grid { grid-template-columns: 1fr; }
+      .summary-grid  { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="header-logo">✝</span>
+      <div class="header-text">
+        <div class="header-title">My Progress</div>
+        <div class="header-subtitle">CCD Grade 4 · This Session</div>
+      </div>
+      <nav class="header-nav">
+        <a href="index.html">← All Chapters</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content" id="main">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span>My Progress</span>
+    </div>
+
+    <div id="progress-root">
+      <!-- Rendered by JS -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4 · Progress resets when browser tab is closed.</p>
+  </footer>
+
+  <script src="js/tracker.js"></script>
+  <script>
+  (function () {
+    var ALL_CHAPTERS = [
+      { id: 8,  title: "To Receive Jesus Worthily" },
+      { id: 9,  title: "Let Us Get Reconciled" },
+      { id: 10, title: "The Sacrament of Reconciliation" },
+      { id: 11, title: "Anointing of the Sick" },
+      { id: 12, title: "The Holy Orders" },
+      { id: 13, title: "Matrimony" },
+      { id: 14, title: "The Sacramentals" },
+      { id: 15, title: "Prayer – Conversation With God" },
+    ];
+    var TOTAL_EXAMS = ALL_CHAPTERS.length * 3; // 24
+
+    function gradeClass(pct) {
+      if (pct >= 80) return 'high';
+      if (pct >= 60) return 'mid';
+      return 'low';
+    }
+
+    function gradeEmoji(pct) {
+      if (pct >= 90) return '🏆';
+      if (pct >= 80) return '⭐';
+      if (pct >= 60) return '📖';
+      return '🙏';
+    }
+
+    function timeAgo(ts) {
+      var diff = Math.round((Date.now() - ts) / 1000);
+      if (diff < 60)  return 'just now';
+      if (diff < 3600) return Math.round(diff / 60) + ' min ago';
+      return Math.round(diff / 3600) + ' hr ago';
+    }
+
+    function render() {
+      var root = document.getElementById('progress-root');
+      var attempts = CCDTracker.getAll();
+
+      if (attempts.length === 0) {
+        root.innerHTML = '<div class="empty-state">'
+          + '<div class="big-icon">📋</div>'
+          + '<h3>No quizzes attempted yet</h3>'
+          + '<p>Complete a quiz and your score will appear here instantly.</p>'
+          + '<a href="index.html" class="btn-primary" style="display:inline-block;text-decoration:none;padding:12px 24px;border-radius:10px;background:var(--blue-mid);color:#fff;font-weight:600;">Start a Quiz →</a>'
+          + '</div>';
+        return;
+      }
+
+      var best    = CCDTracker.bestByExam();   // { "8-1": {...}, ... }
+      var chAvgs  = CCDTracker.chapterAverages(); // { "8": {avg, count, title}, ... }
+
+      // ── Overall stats ──
+      var totalCorrect = 0, totalQs = 0;
+      var examsAttempted = Object.keys(best).length;
+      Object.values(best).forEach(function (a) {
+        totalCorrect += a.score;
+        totalQs      += a.total;
+      });
+      var overallPct = totalQs > 0 ? Math.round((totalCorrect / totalQs) * 100) : 0;
+
+      var chAttempted   = Object.keys(chAvgs).length;
+      var chNotAttempted = ALL_CHAPTERS.length - chAttempted;
+
+      // ── Strength analysis ──
+      var strong  = [];
+      var improve = [];
+      Object.keys(chAvgs).forEach(function (c) {
+        var d = chAvgs[c];
+        if (d.avg >= 80)      strong.push({ id: c, title: d.title, avg: d.avg });
+        else if (d.avg < 60)  improve.push({ id: c, title: d.title, avg: d.avg });
+      });
+
+      // ── Build HTML ──
+      var html = '';
+
+      // Page hero
+      html += '<div class="page-hero" style="margin-bottom:24px;">'
+        + '<span class="badge">Session Summary</span>'
+        + '<h1>My Progress</h1>'
+        + '<p>Scores below show your <strong>best attempt</strong> per exam in this browser session.</p>'
+        + '</div>';
+
+      // Summary cards
+      html += '<div class="summary-grid">'
+        + '<div class="summary-card"><div class="s-value">' + examsAttempted + '<span style="font-size:1rem;font-weight:400;color:var(--gray-500);">/' + TOTAL_EXAMS + '</span></div><div class="s-label">Exams Attempted</div></div>'
+        + '<div class="summary-card ' + gradeClass(overallPct) + '"><div class="s-value">' + overallPct + '%</div><div class="s-label">Overall Score</div></div>'
+        + '<div class="summary-card green"><div class="s-value">' + strong.length + '</div><div class="s-label">Strong Chapters</div></div>'
+        + '<div class="summary-card red"><div class="s-value">' + improve.length + '</div><div class="s-label">Need Improvement</div></div>'
+        + '</div>';
+
+      // Strength / Improvement panels
+      if (strong.length > 0 || improve.length > 0) {
+        html += '<div class="strength-grid">';
+
+        html += '<div class="strength-panel panel-strong">'
+          + '<h4>💪 Strong Areas</h4>'
+          + (strong.length === 0
+            ? '<p style="font-size:0.85rem;color:#166534;opacity:0.7;">Keep going — score 80%+ to see strengths here.</p>'
+            : '<ul>' + strong.map(function (s) {
+                return '<li>✅ Ch.' + s.id + ' – ' + s.title.split(' ').slice(0,3).join(' ') + '… (' + s.avg + '%)</li>';
+              }).join('') + '</ul>')
+          + '</div>';
+
+        html += '<div class="strength-panel panel-improve">'
+          + '<h4>📖 Needs More Practice</h4>'
+          + (improve.length === 0
+            ? '<p style="font-size:0.85rem;color:#991b1b;opacity:0.7;">Great – no chapters below 60% yet!</p>'
+            : '<ul>' + improve.map(function (s) {
+                return '<li>⚠️ Ch.' + s.id + ' – ' + s.title.split(' ').slice(0,3).join(' ') + '… (' + s.avg + '%)</li>';
+              }).join('') + '</ul>')
+          + '</div>';
+
+        html += '</div>';
+      }
+
+      // Chapter-by-chapter table
+      html += '<div class="section-heading" style="margin-top:32px;">Chapter Breakdown</div>';
+      html += '<div style="background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);overflow:hidden;box-shadow:var(--shadow-sm);">'
+        + '<table class="ch-table"><thead><tr>'
+        + '<th>Chapter</th><th>Exam 1</th><th>Exam 2</th><th>Exam 3</th><th>Avg</th>'
+        + '</tr></thead><tbody>';
+
+      ALL_CHAPTERS.forEach(function (ch) {
+        var chId = ch.id;
+        html += '<tr>';
+        html += '<td class="ch-name"><a href="chapter.html?id=' + chId + '">Ch.' + chId + ': ' + ch.title + '</a></td>';
+
+        var chSum = 0, chCount = 0;
+        [1, 2, 3].forEach(function (s) {
+          var key = chId + '-' + s;
+          var a   = best[key];
+          if (a) {
+            var gc = gradeClass(a.percent);
+            html += '<td><span class="exam-pill pill-' + gc + '">' + gradeEmoji(a.percent) + ' ' + a.score + '/' + a.total + ' (' + a.percent + '%)</span></td>';
+            chSum   += a.percent;
+            chCount++;
+          } else {
+            html += '<td><span class="exam-pill pill-none">Not yet</span></td>';
+          }
+        });
+
+        if (chCount > 0) {
+          var avg = Math.round(chSum / chCount);
+          var gc  = gradeClass(avg);
+          html += '<td><div class="avg-bar-wrap">'
+            + '<div class="avg-bar-bg"><div class="avg-bar-fill ' + gc + '" style="width:' + avg + '%"></div></div>'
+            + '<span class="avg-text" style="color:var(--' + (gc === 'high' ? 'green' : gc === 'mid' ? 'gold' : 'red') + ')">' + avg + '%</span>'
+            + '</div></td>';
+        } else {
+          html += '<td><span style="font-size:0.8rem;color:var(--gray-400);">–</span></td>';
+        }
+
+        html += '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+
+      // Recent attempts (all, newest first)
+      html += '<div class="section-heading" style="margin-top:32px;">Attempt History <span style="font-size:0.75rem;font-weight:400;color:var(--gray-500);">(newest first · all attempts)</span></div>';
+      var sorted = attempts.slice().reverse();
+      sorted.forEach(function (a) {
+        var gc = gradeClass(a.percent);
+        html += '<div class="history-item">'
+          + '<div class="history-badge ' + gc + '">' + a.percent + '%</div>'
+          + '<div class="history-info">'
+          + '<strong>Ch.' + a.chapter + ': ' + a.chapterTitle + ' – ' + a.setTitle + '</strong>'
+          + '<span>' + timeAgo(a.ts) + '</span>'
+          + '</div>'
+          + '<span class="history-score" style="color:var(--' + (gc === 'high' ? 'green' : gc === 'mid' ? 'gold' : 'red') + ')">'
+          + a.score + '/' + a.total + '</span>'
+          + '</div>';
+      });
+
+      // CTA
+      html += '<div style="text-align:center;margin-top:32px;">'
+        + '<a href="index.html" class="btn-primary" style="display:inline-block;text-decoration:none;">Practice More Chapters →</a>'
+        + '</div>';
+
+      root.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  })();
+  </script>
+</body>
+</html>

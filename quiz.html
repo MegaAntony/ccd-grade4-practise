@@ -16,6 +16,7 @@
         <div class="header-subtitle quiz-set-title">Loading…</div>
       </div>
       <nav class="header-nav">
+        <a href="progress.html">📊 My Progress</a>
         <a href="index.html">All Chapters</a>
       </nav>
     </div>
@@ -23,7 +24,6 @@
 
   <div class="quiz-wrapper">
 
-    <!-- Breadcrumb -->
     <div class="breadcrumb">
       <a href="index.html" class="bc-index">Home</a>
       <span>›</span>
@@ -32,22 +32,18 @@
       <span class="quiz-set-title-bc">Exam</span>
     </div>
 
-    <!-- Loading state -->
     <div class="loading">
       <div class="spinner"></div>
       <p>Loading questions…</p>
     </div>
 
-    <!-- Quiz container -->
     <div class="quiz-container" style="display:none;">
 
-      <!-- Progress -->
       <div class="quiz-progress-bar-wrap">
         <div class="quiz-progress-bar-fill" style="width:0%"></div>
       </div>
       <div class="quiz-progress-label">Question 1 of <span class="quiz-total-label">20</span></div>
 
-      <!-- Question card -->
       <div class="question-card">
         <div class="question-meta">
           <span class="q-number">Q1</span>
@@ -58,7 +54,6 @@
         <div class="feedback-block"></div>
       </div>
 
-      <!-- Navigation -->
       <div class="quiz-nav">
         <button class="btn-next" type="button">Next Question →</button>
       </div>
@@ -98,16 +93,18 @@
       <div class="score-actions">
         <button class="btn-primary btn-retry" type="button">🔄 Try Again</button>
         <a href="#" class="btn-secondary btn-chapter-back">← More Exams</a>
+        <a href="progress.html" class="btn-primary btn-progress">📊 My Progress</a>
         <a href="index.html" class="btn-secondary btn-home">All Chapters</a>
       </div>
     </div>
 
-  </div><!-- /quiz-wrapper -->
+  </div>
 
   <footer class="site-footer">
     <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4</p>
   </footer>
 
+  <script src="js/tracker.js"></script>
   <script src="js/quiz.js"></script>
 </body>
 </html>

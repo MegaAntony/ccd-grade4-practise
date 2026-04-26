@@ -11,15 +11,14 @@
   const state = {
     chapter: null,
     setId: null,
+    chapterTitle: '',
+    setTitle: '',
     questions: [],
     current: 0,
     score: 0,
     answered: false,
-    responses: [],   // {correct: bool} per question
+    responses: [],
   };
-
-  // ── DOM refs (populated after DOMContentLoaded) ──
-  let dom = {};
 
   // ── Utility ────────────────────────────────
   function qs(sel, ctx) { return (ctx || document).querySelector(sel); }
@@ -49,15 +48,6 @@
     });
   }
 
-  function shuffle(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
   const LETTERS = ['A', 'B', 'C', 'D'];
 
   // ── Init ───────────────────────────────────
@@ -71,7 +61,6 @@
     state.chapter = params.chapter;
     state.setId = params.set;
 
-    // Load question data script
     const scriptPath = `js/questions/chapter${String(params.chapter).padStart(2, '0')}.js`;
     try {
       await loadScript(scriptPath);
@@ -93,21 +82,20 @@
       return;
     }
 
-    state.questions = setData.questions;
+    state.questions    = setData.questions;
+    state.chapterTitle = data.title;
+    state.setTitle     = setData.title;
 
-    // Update page meta
     document.title = `${setData.title} – CCD Grade 4`;
     qs('.quiz-chapter-title').textContent = `Chapter ${params.chapter}: ${data.title}`;
     qsa('.quiz-set-title').forEach(el => { el.textContent = setData.title; });
     qs('.quiz-set-title-bc').textContent = setData.title;
     qs('.quiz-total-label').textContent = state.questions.length;
 
-    // Breadcrumb
     qs('.bc-index').href = 'index.html';
     qs('.bc-chapter').href = `chapter.html?id=${params.chapter}`;
     qs('.bc-chapter').textContent = `Chapter ${params.chapter}`;
 
-    // Hide loading, show quiz
     qs('.loading').style.display = 'none';
     qs('.quiz-container').style.display = 'block';
 
@@ -116,26 +104,20 @@
 
   // ── Render ─────────────────────────────────
   function renderQuestion() {
-    const q = state.questions[state.current];
-    const idx = state.current;
+    const q     = state.questions[state.current];
+    const idx   = state.current;
     const total = state.questions.length;
 
-    // Progress
     const pct = Math.round((idx / total) * 100);
     qs('.quiz-progress-bar-fill').style.width = pct + '%';
     qs('.quiz-progress-label').textContent = `Question ${idx + 1} of ${total}`;
-
-    // Question meta
     qs('.q-number').textContent = `Q${idx + 1}`;
-
-    // Question text
     qs('.question-text').textContent = q.q;
 
-    // Options
     const list = qs('.options-list');
     list.innerHTML = '';
     q.options.forEach((opt, i) => {
-      const li = document.createElement('li');
+      const li  = document.createElement('li');
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       btn.dataset.index = i;
@@ -145,15 +127,11 @@
       list.appendChild(li);
     });
 
-    // Reset feedback
     const fb = qs('.feedback-block');
     fb.className = 'feedback-block';
     fb.innerHTML = '';
 
-    // Hide Next button
     qs('.btn-next').classList.remove('visible');
-    qs('.btn-next').textContent = idx + 1 < total ? 'Next Question →' : 'See My Score';
-
     state.answered = false;
   }
 
@@ -161,23 +139,20 @@
     if (state.answered) return;
     state.answered = true;
 
-    const q = state.questions[state.current];
+    const q       = state.questions[state.current];
     const correct = q.correct;
     const isRight = selectedIdx === correct;
 
     if (isRight) state.score++;
     state.responses.push({ correct: isRight });
 
-    // Style buttons
-    const btns = qsa('.option-btn');
-    btns.forEach((btn, i) => {
+    qsa('.option-btn').forEach((btn, i) => {
       btn.disabled = true;
       if (i === correct && i === selectedIdx) btn.classList.add('correct');
-      else if (i === selectedIdx) btn.classList.add('wrong');
-      else if (i === correct) btn.classList.add('reveal');
+      else if (i === selectedIdx)             btn.classList.add('wrong');
+      else if (i === correct)                 btn.classList.add('reveal');
     });
 
-    // Feedback
     const fb = qs('.feedback-block');
     fb.className = 'feedback-block visible ' + (isRight ? 'correct-fb' : 'wrong-fb');
     fb.innerHTML = `
@@ -189,7 +164,6 @@
       <div class="feedback-ref"><strong>Reference:</strong> ${q.ref}</div>
     `;
 
-    // Show Next
     const nextBtn = qs('.btn-next');
     nextBtn.textContent = state.current + 1 < state.questions.length ? 'Next Question →' : 'See My Score →';
     nextBtn.classList.add('visible');
@@ -213,42 +187,42 @@
 
     const total = state.questions.length;
     const score = state.score;
-    const pct = Math.round((score / total) * 100);
+    const pct   = Math.round((score / total) * 100);
     const wrong = total - score;
 
-    // Trophy / grade
-    let trophy = '🏆', message = '', grade = '';
-    if (pct >= 90) {
-      trophy = '🏆'; grade = 'high';
-      message = 'Excellent work! You have a strong understanding of this lesson. God bless your studies!';
-    } else if (pct >= 70) {
-      trophy = '⭐'; grade = 'high';
-      message = 'Great job! You know this material well. Keep studying to reach perfection!';
-    } else if (pct >= 50) {
-      trophy = '📖'; grade = 'mid';
-      message = 'Good effort! Review the lesson again and try another exam to improve your score.';
-    } else {
-      trophy = '🙏'; grade = 'low';
-      message = 'Keep practicing! Read through the lesson once more and try again. God is with you!';
+    // Record in session tracker
+    if (typeof CCDTracker !== 'undefined') {
+      CCDTracker.record({
+        chapter:      state.chapter,
+        set:          state.setId,
+        chapterTitle: state.chapterTitle,
+        setTitle:     state.setTitle,
+        score:        score,
+        total:        total,
+      });
     }
 
-    qs('.score-trophy').textContent = trophy;
-    qs('.score-number').textContent = score;
-    qs('.score-outof').textContent = `out of ${total}`;
-    qs('.score-circle').className = `score-circle ${grade}`;
-    qs('.score-percent').textContent = `${pct}%`;
-    qs('.score-message').textContent = message;
+    let trophy = '🏆', message = '', grade = '';
+    if (pct >= 90)      { trophy = '🏆'; grade = 'high'; message = 'Excellent work! You have a strong understanding of this lesson. God bless your studies!'; }
+    else if (pct >= 70) { trophy = '⭐'; grade = 'high'; message = 'Great job! You know this material well. Keep studying to reach perfection!'; }
+    else if (pct >= 50) { trophy = '📖'; grade = 'mid';  message = 'Good effort! Review the lesson again and try another exam to improve your score.'; }
+    else                { trophy = '🙏'; grade = 'low';  message = 'Keep practicing! Read through the lesson once more and try again. God is with you!'; }
 
-    // Breakdown
-    qs('.bd-correct').textContent = score;
-    qs('.bd-wrong').textContent = wrong;
-    qs('.bd-percent').textContent = `${pct}%`;
+    qs('.score-trophy').textContent   = trophy;
+    qs('.score-number').textContent   = score;
+    qs('.score-outof').textContent    = `out of ${total}`;
+    qs('.score-circle').className     = `score-circle ${grade}`;
+    qs('.score-percent').textContent  = `${pct}%`;
+    qs('.score-message').textContent  = message;
+    qs('.bd-correct').textContent     = score;
+    qs('.bd-wrong').textContent       = wrong;
+    qs('.bd-percent').textContent     = `${pct}%`;
 
-    // Chapter / back links
     const chNum = state.chapter;
-    qs('.btn-retry').onclick = () => { window.location.reload(); };
-    qs('.btn-chapter-back').href = `chapter.html?id=${chNum}`;
-    qs('.btn-home').href = 'index.html';
+    qs('.btn-retry').onclick          = () => { window.location.reload(); };
+    qs('.btn-chapter-back').href      = `chapter.html?id=${chNum}`;
+    qs('.btn-home').href              = 'index.html';
+    qs('.btn-progress').href          = 'progress.html';
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -258,7 +232,6 @@
     if (el) el.innerHTML = `<div style="color:#dc2626;font-weight:600;">${msg}</div>`;
   }
 
-  // ── Bootstrap ──────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     qs('.btn-next')?.addEventListener('click', handleNext);
     init();
