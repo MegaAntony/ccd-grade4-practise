@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter – CCD Grade 4</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="header-logo">✝</span>
+      <div class="header-text">
+        <div class="header-title">CCD Grade 4 Practice Quizzes</div>
+        <div class="header-subtitle">Syro-Malabar Church · Streams of Life 4</div>
+      </div>
+      <nav class="header-nav">
+        <a href="index.html">← All Chapters</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="breadcrumb" id="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <span id="bc-chapter-name">Chapter</span>
+    </div>
+
+    <!-- Page hero -->
+    <div class="page-hero" id="chapter-hero">
+      <div class="loading"><div class="spinner"></div>Loading chapter…</div>
+    </div>
+
+    <!-- Exams section -->
+    <div id="exams-section" style="display:none;">
+      <div class="section-heading">Choose an Exam</div>
+      <div class="exam-list" id="exam-list"></div>
+
+      <!-- Navigation between chapters -->
+      <div class="section-heading" style="margin-top:40px;">Navigate Chapters</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a id="btn-prev-ch" href="#" class="btn-secondary" style="display:none;">← Previous Chapter</a>
+        <a id="btn-next-ch" href="#" class="btn-secondary" style="display:none;">Next Chapter →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4</p>
+  </footer>
+
+  <script>
+    const CHAPTER_META = {
+      8:  { title: "To Receive Jesus Worthily",      topic: "Holy Eucharist & Emmaus Journey" },
+      9:  { title: "Let Us Get Reconciled",           topic: "The Prodigal Son, Sin, and Contrition" },
+      10: { title: "The Sacrament of Reconciliation", topic: "Zacchaeus and the 5 Conditions" },
+      11: { title: "Anointing of the Sick",           topic: "Jesus the Healer and Sacrament of the Sick" },
+      12: { title: "The Holy Orders",                 topic: "Priesthood – Eternal and Ministerial" },
+      13: { title: "Matrimony",                       topic: "Christian Marriage and Family Life" },
+      14: { title: "The Sacramentals",                topic: "Blessings, Holy Myron and Church Rites" },
+      15: { title: "Prayer – Conversation With God",  topic: "Lord's Prayer, Types and Fruits of Prayer" },
+    };
+
+    const EXAM_DESCRIPTIONS = [
+      "Foundation questions on the core story and key concepts",
+      "Deeper understanding of the sacrament and scripture",
+      "Full review covering all topics in this chapter"
+    ];
+
+    const EXAM_ICONS = ["📝", "📖", "🏅"];
+
+    function init() {
+      const params = new URLSearchParams(window.location.search);
+      const id = parseInt(params.get('id'), 10);
+
+      if (!id || !CHAPTER_META[id]) {
+        document.getElementById('chapter-hero').innerHTML =
+          '<p style="color:#dc2626;font-weight:600;">Chapter not found. <a href="index.html">Return home</a></p>';
+        return;
+      }
+
+      const meta = CHAPTER_META[id];
+      const chapters = Object.keys(CHAPTER_META).map(Number);
+      const idx = chapters.indexOf(id);
+
+      // Update page title
+      document.title = `Chapter ${id}: ${meta.title} – CCD Grade 4`;
+
+      // Breadcrumb
+      document.getElementById('bc-chapter-name').textContent = `Chapter ${id}: ${meta.title}`;
+
+      // Hero
+      document.getElementById('chapter-hero').innerHTML = `
+        <span class="badge">Chapter ${id}</span>
+        <h1>${meta.title}</h1>
+        <p>${meta.topic}</p>
+      `;
+
+      // Exam list
+      document.getElementById('exams-section').style.display = 'block';
+      const list = document.getElementById('exam-list');
+      for (let s = 1; s <= 3; s++) {
+        const link = document.createElement('a');
+        link.href = `quiz.html?chapter=${id}&set=${s}`;
+        link.className = 'exam-card';
+        link.innerHTML = `
+          <div class="exam-icon">${EXAM_ICONS[s-1]}</div>
+          <div class="exam-info">
+            <h3>Exam ${s}</h3>
+            <p>${EXAM_DESCRIPTIONS[s-1]}</p>
+          </div>
+          <span class="exam-arrow">›</span>
+        `;
+        list.appendChild(link);
+      }
+
+      // Chapter nav
+      if (idx > 0) {
+        const prevId = chapters[idx - 1];
+        const btn = document.getElementById('btn-prev-ch');
+        btn.href = `chapter.html?id=${prevId}`;
+        btn.textContent = `← Chapter ${prevId}: ${CHAPTER_META[prevId].title}`;
+        btn.style.display = 'inline-block';
+      }
+      if (idx < chapters.length - 1) {
+        const nextId = chapters[idx + 1];
+        const btn = document.getElementById('btn-next-ch');
+        btn.href = `chapter.html?id=${nextId}`;
+        btn.textContent = `Chapter ${nextId}: ${CHAPTER_META[nextId].title} →`;
+        btn.style.display = 'inline-block';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

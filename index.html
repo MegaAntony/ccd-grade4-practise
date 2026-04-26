@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCD Grade 4 – Practice Quizzes | Streams of Life 4</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="header-logo">✝</span>
+      <div class="header-text">
+        <div class="header-title">CCD Grade 4 Practice Quizzes</div>
+        <div class="header-subtitle">Syro-Malabar Church · Streams of Life 4 · Term 2</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="page-hero">
+      <span class="badge">All Chapters</span>
+      <h1>Practice Quiz Center</h1>
+      <p>Choose a chapter below to begin practicing. Each chapter has 3 exams with 20 questions each.</p>
+      <div class="verse-block">
+        "Study to show yourself approved unto God, a worker who does not need to be ashamed, rightly dividing the word of truth." (2 Timothy 2:15)
+      </div>
+    </div>
+
+    <div class="section-heading">Chapters 8 – 15</div>
+
+    <div class="chapters-grid" id="chapters-grid">
+      <!-- Cards rendered by JS -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4 · Term 2 · Lessons 8–15</p>
+  </footer>
+
+  <script>
+    const chapters = [
+      { id: 8,  title: "To Receive Jesus Worthily",     topic: "Holy Eucharist & Emmaus",        icon: "🍞" },
+      { id: 9,  title: "Let Us Get Reconciled",          topic: "Prodigal Son & Sin",             icon: "🕊️" },
+      { id: 10, title: "The Sacrament of Reconciliation",topic: "Zacchaeus & Confession",         icon: "🙏" },
+      { id: 11, title: "Anointing of the Sick",          topic: "Healing & Christian Mission",    icon: "🫙" },
+      { id: 12, title: "The Holy Orders",                topic: "Priesthood & Apostles",          icon: "✝️" },
+      { id: 13, title: "Matrimony",                      topic: "Marriage & Christian Family",    icon: "💍" },
+      { id: 14, title: "The Sacramentals",               topic: "Church Blessings & Holy Myron",  icon: "⛪" },
+      { id: 15, title: "Prayer",                         topic: "Conversation With God",          icon: "📿" },
+    ];
+
+    const grid = document.getElementById('chapters-grid');
+    chapters.forEach(ch => {
+      const card = document.createElement('a');
+      card.href = `chapter.html?id=${ch.id}`;
+      card.className = 'chapter-card';
+      card.innerHTML = `
+        <div class="chapter-card-header">
+          <div class="chapter-number">${ch.id}</div>
+          <div>
+            <h3>${ch.title}</h3>
+            <p>${ch.topic}</p>
+          </div>
+        </div>
+        <div class="chapter-card-body">
+          <div class="chapter-stats">
+            <span class="stat-pill">3 Exams</span>
+            <span class="stat-pill">20 Questions each</span>
+            <span class="stat-pill">60 Total</span>
+          </div>
+          <span class="start-btn">Start Chapter ${ch.id} →</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz – CCD Grade 4</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="header-logo">✝</span>
+      <div class="header-text">
+        <div class="header-title quiz-chapter-title">CCD Grade 4</div>
+        <div class="header-subtitle quiz-set-title">Loading…</div>
+      </div>
+      <nav class="header-nav">
+        <a href="index.html">All Chapters</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="quiz-wrapper">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="index.html" class="bc-index">Home</a>
+      <span>›</span>
+      <a href="#" class="bc-chapter">Chapter</a>
+      <span>›</span>
+      <span class="quiz-set-title-bc">Exam</span>
+    </div>
+
+    <!-- Loading state -->
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading questions…</p>
+    </div>
+
+    <!-- Quiz container -->
+    <div class="quiz-container" style="display:none;">
+
+      <!-- Progress -->
+      <div class="quiz-progress-bar-wrap">
+        <div class="quiz-progress-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="quiz-progress-label">Question 1 of <span class="quiz-total-label">20</span></div>
+
+      <!-- Question card -->
+      <div class="question-card">
+        <div class="question-meta">
+          <span class="q-number">Q1</span>
+          <span class="q-points">1 point</span>
+        </div>
+        <div class="question-text">Loading question…</div>
+        <ul class="options-list"></ul>
+        <div class="feedback-block"></div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="quiz-nav">
+        <button class="btn-next" type="button">Next Question →</button>
+      </div>
+
+    </div>
+
+    <!-- Score screen -->
+    <div class="score-screen">
+      <div class="score-trophy">🏆</div>
+      <div class="score-title">Quiz Complete!</div>
+      <div class="score-subtitle quiz-set-title">Great effort</div>
+
+      <div class="score-circle">
+        <div class="score-number">0</div>
+        <div class="score-outof">out of 20</div>
+      </div>
+
+      <div class="score-percent">0%</div>
+      <div class="score-message"></div>
+
+      <div class="score-breakdown">
+        <h4>Score Summary</h4>
+        <div class="breakdown-row">
+          <span class="breakdown-label">✅ Correct Answers</span>
+          <span class="breakdown-value green bd-correct">0</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label">❌ Wrong Answers</span>
+          <span class="breakdown-value red bd-wrong">0</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label">📊 Percentage</span>
+          <span class="breakdown-value bd-percent">0%</span>
+        </div>
+      </div>
+
+      <div class="score-actions">
+        <button class="btn-primary btn-retry" type="button">🔄 Try Again</button>
+        <a href="#" class="btn-secondary btn-chapter-back">← More Exams</a>
+        <a href="index.html" class="btn-secondary btn-home">All Chapters</a>
+      </div>
+    </div>
+
+  </div><!-- /quiz-wrapper -->
+
+  <footer class="site-footer">
+    <p>CCD Grade 4 · Syro-Malabar Church · Streams of Life 4</p>
+  </footer>
+
+  <script src="js/quiz.js"></script>
+</body>
+</html>
